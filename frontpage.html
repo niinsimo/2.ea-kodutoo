@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA_Compatible" content="ie=edge">
+    <title>Esileht</title>
+    <link rel="stylesheet" type="text/css" href="disain.css">
+    <script src="taimer.js"></script>	
+</head>
+	
+<body id="frontpage">
+
+    <h1 id="title"> Täida andmed </h1>
+    <h2 id="data"> Mängija nimi: </h2>
+    <input id="name" type="text" name="playerName"><br>
+
+    <input id="man" type="radio" name="gender" value="all" checked>
+    <label for="man">Mees</label>
+    <input id="woman" type="radio" name="gender" value="false">
+    <label for="woman">Naine</label><br>
+
+    <button id="registration" type="button" onclick="showButtons()">Registreeri andmed</button>
+
+    <form action="mangame.html">
+
+        <input id="mangameButton" type="submit" value="Alusta mängu">
+
+    </form>
+
+    <form action="womangame.html">
+                    
+        <input id="womangameButton" type="submit" value="Alusta mängu">
+                    
+    </form>
+
+</body>
+
+</html>

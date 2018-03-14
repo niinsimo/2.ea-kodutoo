@@ -1,0 +1,185 @@
+#frontpage{
+    background-color: DarkOliveGreen;
+}
+
+#mangame{
+    background-color: SaddleBrown;
+}
+
+#womangame{
+    background-color: Red;
+}
+
+#title{
+    background-color: SeaGreen;
+    text-align: center;
+    color: blue;
+    width: 250px;
+    height: 40px;
+    position: relative;
+    top: 250px;
+    left: 500px;
+}
+
+#data{
+    background-color: lightblue;
+    text-align: center;
+    color: RebeccaPurple ;
+    width: 250px;
+    height: 30px;
+    position: relative;
+    top: 228px;
+    left: 500px;
+}
+
+#name{
+    background-color: PapayaWhip;
+    text-align: center;
+    font-size:18px;
+    color: MidnightBlue;
+    width: 246px;
+    height: 30px;
+    position: relative;
+    top: 208px;
+    left: 500px;
+}
+
+#registration{
+    background-color: SpringGreen ;
+    color: green;
+    font-size: 22px;
+    height: 50px;
+    width: 250px;
+    text-align: center;
+    position: relative;
+    top: 210px;
+    left: 500px;
+}
+
+#mangameButton{
+    background-color: SaddleBrown;
+    color: green;
+    font-size: 22px;
+    height: 50px;
+    width: 250px;
+    text-align: center;
+    position: relative;
+    top: 160px;
+    left: 500px;
+}
+
+#womangameButton{
+    background-color: Red;
+    color: green;
+    font-size: 22px;
+    height: 50px;
+    width: 250px;
+    text-align: center;
+    position: relative;
+    top: 110px;
+    left: 500px;
+}
+
+input[type=radio] {
+    display:none; 
+    margin:10px;
+}
+
+input[type=radio] + label {
+    display:inline-block;
+    padding: 8px 43px;
+    position: relative;
+    top: 209px;
+    left: 500px;
+    background-color: Wheat;
+}
+
+input[type=radio]:checked + label { 
+    background-image: none;
+    background-color: SandyBrown;
+}
+
+#taimer{
+    background-color: LightSeaGreen;
+    color: black;
+    text-align: center;
+    font-size: 70px;
+    height: 100px;
+    width: 100px;
+    position: relative;
+    top: 250px;
+    left: 80px;
+}
+
+#start{
+    font-size: 35px;
+    height: 50px;
+    width: 220px;
+    text-align: center;
+    position: relative;
+    top: 150px;
+    left: 240px;
+    background-color: LightSeaGreen;
+    color: OliveDrab;
+}
+
+#stop{
+    font-size: 35px;
+    height: 50px;
+    width: 220px;
+    text-align: center;
+    position: relative;
+    top: 330px;
+    left: -90px;
+    background-color: LightSeaGreen;
+    color: OliveDrab;
+}
+
+#score{
+    background-color: LightSeaGreen;
+    color: black;
+    text-align: center;
+    font-size: 70px;
+    height: 100px;
+    width: 150px;
+    position: relative;
+    top: 320px;
+    left: -325px;
+}
+
+#addScore{
+    font-size: 35px;
+    height: 50px;
+    width: 220px;
+    text-align: center;
+    position: relative;
+    top: 150px;
+    left: 140px;
+    background-color: LightSeaGreen;
+    color: OliveDrab;
+}
+
+#reduceScore{
+    font-size: 35px;
+    height: 50px;
+    width: 240px;
+    text-align: center;
+    position: relative;
+    top: 150px;
+    left: 140px;
+    background-color: LightSeaGreen;
+    color: OliveDrab;
+}
+
+#points{
+    background-color: LightYellow;
+    color: black;
+    text-align: center;
+    font-size: 70px;
+    height: 100px;
+    width: 150px;
+    position: relative;
+    top: 320px;
+    left: -180px;
+}
+
