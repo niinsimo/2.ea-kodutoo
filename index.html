@@ -9,18 +9,271 @@
         padding: 0;
       }
 
-      html, body, canvas {
-        width: 100%;
-        height: 100%;
-      }
+
       
-      canvas {
-        position: absolute;
+	  body { 
+        text-align: center;
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
       }
+	  
+	  input[type=text] {
+        width: 50%;
+        padding: 15px;
+        margin: 100px 0 30px 0;
+        display: inline-block;
+        border: none;
+        background: #f1f1f1;
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+      }
+
+      button {
+        background-color: rgb(24, 23, 27);
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        cursor: pointer;
+        width: 50%;
+        opacity: 0.9;
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+      }
+      button:hover {
+        opacity:1;
+      }
+
+      div.hidden {
+        display: none;
+      }
+	  
+	  canvas.hidden {
+        display: none;
+      }
+
+      .gametop {
+        text-align: left;
+        font-size: 14px;
+      }
+
     </style>
-    <script src="app.js"></script>
+    <script>
+		/* TYPER */
+		const TYPER = function () {
+		  if (TYPER.instance_) {
+			return TYPER.instance_
+		  }
+		  TYPER.instance_ = this
+
+		  this.WIDTH = window.innerWidth
+		  this.HEIGHT = window.innerHeight
+		  this.canvas = null
+		  this.ctx = null
+
+		  this.words = []
+		  this.word = null
+		  this.wordMinLength = 5
+		  this.guessedWords = 0
+
+		  this.init()
+		}
+
+		window.TYPER = TYPER
+
+		TYPER.prototype = {
+		  init: function () {
+			this.canvas = document.getElementsByTagName('canvas')[0]
+			this.ctx = this.canvas.getContext('2d')
+
+			this.canvas.style.width = this.WIDTH + 'px'
+			this.canvas.style.height = this.HEIGHT + 'px'
+
+			this.canvas.width = this.WIDTH * 2
+			this.canvas.height = this.HEIGHT * 2
+
+			this.loadWords()
+		  },
+
+		  loadWords: function () {
+			const xmlhttp = new XMLHttpRequest()
+
+			xmlhttp.onreadystatechange = function () {
+			  if (xmlhttp.readyState === 4 && (xmlhttp.status === 200 || xmlhttp.status === 0)) {
+				const response = xmlhttp.responseText
+				const wordsFromFile = response.split('\n')
+
+				typer.words = structureArrayByWordLength(wordsFromFile)
+
+				typer.start()
+			  }
+			}
+
+			xmlhttp.open('GET', './lemmad2013.txt', true)
+			xmlhttp.send()
+		  },
+
+		  start: function () {
+			this.generateWord()
+			this.word.Draw()
+
+			window.addEventListener('keypress', this.keyPressed.bind(this))
+		  },
+
+		  generateWord: function () {
+			const generatedWordLength = this.wordMinLength + parseInt(this.guessedWords / 5)
+			const randomIndex = (Math.random() * (this.words[generatedWordLength].length - 1)).toFixed()
+			const wordFromArray = this.words[generatedWordLength][randomIndex]
+
+			this.word = new Word(wordFromArray, this.canvas, this.ctx)
+		  },
+
+		  keyPressed: function (event) {
+			const letter = String.fromCharCode(event.which)
+
+			if (letter === this.word.left.charAt(0)) {
+			  this.word.removeFirstLetter()
+
+			  if (this.word.left.length === 0) {
+				this.guessedWords += 1
+
+				this.generateWord()
+			  }
+
+			  this.word.Draw()
+			}
+		  }
+		}
+
+		/* WORD */
+		const Word = function (word, canvas, ctx) {
+		  this.word = word
+		  this.left = this.word
+		  this.canvas = canvas
+		  this.ctx = ctx
+		}
+
+		Word.prototype = {
+		  Draw: function () {
+			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+
+			this.ctx.textAlign = 'center'
+			this.ctx.font = '140px Courier'
+			this.ctx.fillText(this.left, this.canvas.width / 2, this.canvas.height / 2)
+		  },
+
+		  removeFirstLetter: function () {
+			this.left = this.left.slice(1)
+		  }
+		}
+
+		/* HELPERS */
+		function structureArrayByWordLength (words) {
+		  let tempArray = []
+
+		  for (let i = 0; i < words.length; i++) {
+			const wordLength = words[i].length
+			if (tempArray[wordLength] === undefined)tempArray[wordLength] = []
+
+			tempArray[wordLength].push(words[i])
+		  }
+
+		  return tempArray
+		}
+
+		window.onload = function () {
+		  const typer = new TYPER()
+		  window.typer = typer
+		}
+		
+		var gameForm = document.getElementById("gameForm");
+        function startGame(){
+            var radios = document.getElementsByName('gender');
+            var firstName = document.getElementsByName('firstName')[0].value;
+            var showName = document.getElementById('showName').innerHTML = firstName;
+            var random= Math.floor(Math.random() * 6) + 0;
+            
+            if (validate()){
+                for (var i = 0, length = radios.length; i < length; i++){
+                    if (radios[i].value == "male" && radios[i].checked){
+                        var manBg = [
+                            "slateblue", "indigo", "palegreen", "powderblue", "tan", "peru"
+                        ];
+                        document.body.style.backgroundColor = manBg[random];
+                    }
+                    else if (radios[i].value == "female" && radios[i].checked){
+                        var womanBg = [
+                            "linen", "orchid", "moccasin", "coral", "indianred", "pink"
+                        ];
+                        document.body.style.backgroundColor = womanBg[random];
+                    }
+                }
+                var signUp = document.getElementById("signUpForm");
+                if (signUp.style.display === "none") {
+                    signUp.style.display = "block";
+                } else {
+                    signUp.style.display = "none";
+                    document.getElementById("gameForm").classList.remove("hidden");
+					document.getElementById("gameForm").classList.add("canvas");
+                }
+                startCountDown();
+            } else {
+                var errorMessage = document.getElementById('errorMessage').innerHTML = "Palun täidke kõik väljad";
+            }
+        }
+        
+        function validate() {
+            var radios = document.getElementsByName('gender');
+            var firstName = document.getElementsByName('firstName')[0].value;
+
+            if (!firstName) {
+                return false;
+            }
+
+            var genderSelected = false;
+            for (var i = 0, length = radios.length; i < length; i++){
+                if(radios[i].checked){
+                    genderSelected = true;
+                    break;
+                }
+            }
+            return genderSelected;
+        }
+
+        function startCountDown(){
+            var startTime = new Date().getTime()
+            window.setInterval(oi, 10)
+  
+            function oi () {
+                const currentTime = new Date().getTime()
+                var timer1 = 10000 -(currentTime - startTime);
+                if (timer1>=0){
+                    var timer2 = document.getElementById('showTime').innerHTML = timer1;
+                } else {
+                    var timer2 = document.getElementById('showTime').innerHTML = "Aeg sai otsa";
+					document.getElementById("canvas").classList.add("hidden");
+                }
+            }
+        };
+	</script>
   </head>
   <body>
-    <canvas></canvas>
+	<div id="signUpForm">
+		<h1>Registreeri andmed</h1>
+		<label for="firstName"><b>Nimi   </b></label>
+		<input type="text" placeholder="Sisesta nimi" name="firstName" required><br><br>
+		<div required>
+			<input type="radio" name="gender" value="male"> Mees
+			<input type="radio" name="gender" value="female"> Naine <br><br>
+		</div>
+		<span id="errorMessage"></span><br>
+		<button type="submit" class="submitbtn" onclick="startGame()">Alusta mängu</button>
+    </div>
+	<div id="gameForm" class="hidden">
+		<p id="showName" class="gametop" ></p>
+		<p id="showTime" class="gametop"></p>
+		<canvas  id="canvas"></canvas>
+    </div>
+	
   </body>
 </html>
+
+
+
