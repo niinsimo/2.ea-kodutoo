@@ -75,11 +75,13 @@ TYPER.prototype = {
 
       if (this.word.left.length === 0) {
         this.guessedWords += 1
-
         this.generateWord()
       }
 
       this.word.Draw()
+	  if (this.guessedWords > 2) {
+			  startSpinning();
+		  }
     }
   }
 }
@@ -118,6 +120,21 @@ function structureArrayByWordLength (words) {
   }
 
   return tempArray
+}
+
+function startSpinning(){
+    var id = setInterval(rotate, 5); 
+    rotate();
+    }
+}
+
+var l;
+function rotate() {
+    l++;
+    var e = 'deg';
+    var o = l+e;
+    var u = "rotate("+o+")";
+    this.canvas.style.transform = u;
 }
 
 window.onload = function () {

@@ -8,9 +8,7 @@
         margin: 0;
         padding: 0;
       }
-
-
-      
+ 
 	  body { 
         text-align: center;
         font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
@@ -26,7 +24,7 @@
         font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
       }
 
-      button {
+      .submitbtn {
         background-color: rgb(24, 23, 27);
         color: white;
         padding: 14px 20px;
@@ -37,6 +35,20 @@
         opacity: 0.9;
         font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
       }
+	  
+	  .newgamebtn {
+	    background-color: rgb(24, 23, 27);
+        color: white;
+        cursor: pointer;
+        opacity: 0.9;
+		text-align: right;
+		border: none;
+		padding: 14px 20px;
+		opacity: 0.9;
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+		margin: 8px, 8px;
+	  }
+	  
       button:hover {
         opacity:1;
       }
@@ -57,6 +69,10 @@
     </style>
     <script>
 		/* TYPER */
+		function showRules() {
+			document.getElementById("signUpForm").classList.add("hidden");
+			document.getElementById("rulesForm").classList.remove("hidden");
+		}
 		const TYPER = function () {
 		  if (TYPER.instance_) {
 			return TYPER.instance_
@@ -79,6 +95,8 @@
 		window.TYPER = TYPER
 
 		TYPER.prototype = {
+		  score: 0,
+		  leaderboard: [],
 		  init: function () {
 			this.canvas = document.getElementsByTagName('canvas')[0]
 			this.ctx = this.canvas.getContext('2d')
@@ -133,7 +151,8 @@
 
 			  if (this.word.left.length === 0) {
 				this.guessedWords += 1
-
+				this.score++;
+				startCountDown()
 				this.generateWord()
 			  }
 
@@ -184,14 +203,20 @@
 		}
 		
 		var gameForm = document.getElementById("gameForm");
+		
+		function startNewGame(){
+			startGame();
+		}
+		
         function startGame(){
+			document.getElementById("gameForm").classList.add("hidden");
             var radios = document.getElementsByName('gender');
             var firstName = document.getElementsByName('firstName')[0].value;
             var showName = document.getElementById('showName').innerHTML = firstName;
             var random= Math.floor(Math.random() * 6) + 0;
             
             if (validate()){
-                for (var i = 0, length = radios.length; i < length; i++){
+                for (var i = 0; i < radios.length; i++){
                     if (radios[i].value == "male" && radios[i].checked){
                         var manBg = [
                             "slateblue", "indigo", "palegreen", "powderblue", "tan", "peru"
@@ -236,22 +261,37 @@
             }
             return genderSelected;
         }
-
+		var id;
         function startCountDown(){
+			clearInterval(id);
             var startTime = new Date().getTime()
-            window.setInterval(oi, 10)
+            id = setInterval(timer, 10)
   
-            function oi () {
+            function timer () {
                 const currentTime = new Date().getTime()
                 var timer1 = 10000 -(currentTime - startTime);
                 if (timer1>=0){
-                    var timer2 = document.getElementById('showTime').innerHTML = timer1;
+                    var timer1 = document.getElementById('showTime').innerHTML= timer1;
                 } else {
-                    var timer2 = document.getElementById('showTime').innerHTML = "Aeg sai otsa";
+					clearInterval(id);
+                    document.getElementById('showTime').innerHTML = "Aeg sai otsa " + window.typer.score;
+					window.typer.leaderboard.push(window.typer.score);
+					printLeaderboard(window.typer.leaderboard);
+					alert(timescore);
 					document.getElementById("canvas").classList.add("hidden");
+					document.getElementById("gameForm").classList.add("hidden");
+					document.getElementById("gameForm").classList.remove("hidden");
                 }
             }
         };
+
+		function printLeaderboard(scores) {
+			console.log(scores)
+			for(var i = 0; i < scores.length; i++) {
+				console.log(scores[i]);
+				finalScore = document.getElementById("finalScore").innerHTML = (scores[i]);
+			}
+		}
 	</script>
   </head>
   <body>
@@ -264,14 +304,31 @@
 			<input type="radio" name="gender" value="female"> Naine <br><br>
 		</div>
 		<span id="errorMessage"></span><br>
-		<button type="submit" class="submitbtn" onclick="startGame()">Alusta mängu</button>
-    </div>
+		<button type="submit" class="submitbtn" onclick="startGame()">Alusta mängu</button><br>
+		<button type="submit" class="newgamebtn" onclick="showRules()">Mängu reeglid</button>
+	</div>
+	<div id="rulesForm" class="hidden">
+		<h1>Mängu eesmärk</h1>
+		<ol>
+			<li>Trükkida ekraanile kuvatud sõna võimalikult kiiresti</li>
+			<li>Trükkida ekraanile kuvatud sõna võimalikult õigesti</li>
+		</ol>
+		<h1>Mängu reeglid</h1>
+		<ol>
+			<li>Mäng on läbi kui taimer on tikunud nulli</li>
+			<li>Iga sõna õigesti trükkimisel lisakase taimerile aega juurde</li>
+		</ol>
+	</div>
 	<div id="gameForm" class="hidden">
 		<p id="showName" class="gametop" ></p>
 		<p id="showTime" class="gametop"></p>
+		<button type="submit" class="newgamebtn" onclick="startNewGame()">Alusta uuesti</button>
 		<canvas  id="canvas"></canvas>
     </div>
-	
+	<div id="leaderBoard" class="hidden">
+		<h1 id="firstName"> </h1>
+		<h1 id="finalScore"> </h1>
+	</div>
   </body>
 </html>
 
