@@ -23,7 +23,6 @@
 		background: #f1f1f1;
 		font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 	}
-
 	 .submitbtn {
 		background-color: rgb(24, 23, 27);
 		color: white;
@@ -52,7 +51,6 @@
 	button:hover {
 		opacity:1;
 	}
-
 	div.hidden {
 		display: none;
 	}
@@ -60,11 +58,9 @@
 	table.hidden {
 		display: none;
 	}
-
 	canvas.hidden {
 		display: none;
 	}
-
 	h1.hidden {
 		display: none;
 	}
@@ -81,7 +77,6 @@
 		color: black;
 		opacity: 0,7;
 	}
-
 	table {
 		border: 1px solid black;
 		color:black;
@@ -91,30 +86,25 @@
 		width: 100%;
 		table-layout: fixed;
 	}
-
 	table caption {
 		font-size: 1.5em;
 		margin: .5em 0 .75em;
 	}
-
 	table tr {
 		filter:alpha(opacity=20);
 		border: 1px solid black;
 		padding: .35em;
 	}
-
 	table td {
 		padding: .625em;
 		text-align: center;
 	}
-
 	table th {
 		font-size: .85em;
 		letter-spacing: .1em;
 		opacity: 0,4;
 		text-transform: uppercase;
 	}
-
     </style>
     <script>
 	/* TYPER */
@@ -141,7 +131,6 @@
 	}
 	window.TYPER = TYPER
 	TYPER.prototype = {
-
 		init: function () {
 			this.canvas = document.getElementsByTagName('canvas')[0]
 			this.ctx = this.canvas.getContext('2d')
@@ -150,6 +139,19 @@
 			this.canvas.width = this.WIDTH * 2
 			this.canvas.height = this.HEIGHT * 2
 			this.loadWords()
+			//öörežiim
+			var timer2 = new Date().getHours();
+			console.log(timer2)
+			if (timer2 >=23 || timer2<=6 ){
+			this.ctx.fillStyle = "white";
+			var x = document.getElementsByTagName("BODY")[0];
+			x.style.backgroundColor = "black";
+			document.getElementById('rulesForm').style.color = 'white';
+			document.getElementById('signUpForm').style.color = 'white';
+			document.getElementById('gameForm').style.color = 'white';
+			
+			
+			}
 		},
 		loadWords: function () {
 			const xmlhttp = new XMLHttpRequest()
@@ -183,7 +185,6 @@
 					this.guessedWords += 1
 					this.score += this.word.word.length
 					console.log(this.score)
-
 					startCountDown()
 					this.generateWord()
 				}
@@ -248,6 +249,8 @@
 					var womanBg = [ "linen", "orchid", "moccasin", "coral", "indianred", "pink" ];
 					document.body.style.backgroundColor = womanBg[random];
 				}
+				
+				
 		}
 		var signUp = document.getElementById("signUpForm");
 		if (signUp.style.display === "none") {
@@ -278,7 +281,6 @@
 		}
 		return genderSelected;
 	}
-
 	var id;
     	function startCountDown(){
 		clearInterval(id);
@@ -287,6 +289,11 @@
 		function timer () {
 			const currentTime = new Date().getTime()
 			var timer1 = Math.round((5000 -(currentTime - startTime))/1000);
+			//öörežiim
+			var timer2 = new Date().getHours();
+				if (timer2 >=23 || timer2<=6 ){
+					document.body.style.backgroundColor = "black";
+					}
 			if (timer1>=0){
 				console.log(timer1);
 				var timer1 = document.getElementById('showTime').innerHTML= timer1;
@@ -375,7 +382,6 @@
 				// var max1name;
 				// var max2name;
 				// var playername;
-
 				// for (var i=1; i <= localStorage.length; i++)  {
 				// 	onevalue = localStorage.getItem(i)
 				// 	event = JSON.parse(onevalue);
@@ -403,10 +409,16 @@
 				// console.log(max2);
 				// console.log(max2name);
 			}
-
 			document.getElementById("lastScore").innerHTML = window.typer.score;
+			//öörežiim
+			var timer2 = new Date().getHours();
+				if (timer2 >=23 || timer2<=6 ){
+					document.getElementById('showTime').style.color = "white";
+					document.getElementById('lb').style.color = 'white';
+					document.getElementById('ls').style.color = 'white';
+					document.getElementsByTagName('table').style.borderColor = 'white';
+				}
 			//printLeaderboard();
-
 		}
 	}
 		
@@ -417,7 +429,6 @@
 		console.log(leaderBoardData);
 		leaderBoardDiv.innerHTML = 'väljaarvutatud skoor';
 	}
-
 </script>
 </head>
 <body>
