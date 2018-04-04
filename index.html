@@ -51,6 +51,7 @@
       button:hover {
         opacity:1;
       }
+
       div.hidden {
         display: none;
       }
@@ -70,9 +71,9 @@
     </style>
     <script>
 		/* TYPER */
-		//simone
 		function showRules() {
 			document.getElementById("signUpForm").classList.add("hidden");
+			document.getElementById("canvas").classList.add("hidden");
 			document.getElementById("rulesForm").classList.remove("hidden");
 		}
 		const TYPER = function () {
@@ -184,7 +185,9 @@
 		}
 		
         function startGame(){
+			document.getElementById("canvas").classList.remove("hidden");
 			document.getElementById("gameForm").classList.add("hidden");
+			document.getElementById("rulesForm").classList.add("hidden");
             var radios = document.getElementsByName('gender');
             var firstName = document.getElementsByName('firstName')[0].value;
             var showName = document.getElementById('showName').innerHTML = firstName;
@@ -297,12 +300,7 @@
 		<p id="showName" class="gametop" ></p>
 		<p id="showTime" class="gametop"></p>
 		<button type="submit" class="newgamebtn" onclick="startNewGame()">Alusta uuesti</button>
-<<<<<<< HEAD
 	</div>
-	<canvas  id="canvas"></canvas>
-=======
-		<canvas  id="canvas"></canvas>
-	</div>
->>>>>>> 80bee28d25c1904e3fcfad58f26833061f8ace98
+	<canvas  id="canvas" class="hidden"></canvas>
   </body>
 </html>
