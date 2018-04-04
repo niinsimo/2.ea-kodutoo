@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!doctype html>
 <html lang="en">
   <head>
@@ -304,3 +305,524 @@
 	<canvas  id="canvas" class="hidden"></canvas>
   </body>
 </html>
+=======
+<!doctype html>
+<html lang="en">
+  <head>
+	<meta charset="UTF-8">
+    <title>typer</title>
+    <style> 
+	* {
+		margin: 0;
+		padding: 0;
+	}
+	    
+	body { 
+		text-align: center;
+		font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	}
+		
+	input[type=text] {
+		width: 50%;
+		padding: 15px;
+		margin: 100px 0 30px 0;
+		display: inline-block;
+		border: none;
+		background: #f1f1f1;
+		font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	}
+	 .submitbtn {
+		background-color: rgb(24, 23, 27);
+		color: white;
+		padding: 14px 20px;
+		margin: 8px 0;
+		border: none;
+		cursor: pointer;
+		width: 50%;
+		opacity: 0.9;
+		font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	}
+			
+	.newgamebtn {
+		background-color: rgb(24, 23, 27);
+		color: white;
+		cursor: pointer;
+		opacity: 0.9;
+		text-align: right;
+		border: none;
+		padding: 14px 20px;
+		opacity: 0.9;
+		font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+		margin: 8px, 8px;
+	}
+			
+	button:hover {
+		opacity:1;
+	}
+	div.hidden {
+		display: none;
+	}
+			
+	table.hidden {
+		display: none;
+	}
+	canvas.hidden {
+		display: none;
+	}
+	h1.hidden {
+		display: none;
+	}
+			
+	.gametop {
+		text-align: left;
+		font-size: 14px;
+		padding: 14px 20px;
+	}
+			
+	.leaderboard{
+		padding: 14px 20px;
+		top: 100px;
+		color: black;
+		opacity: 0,7;
+	}
+	table {
+		border: 1px solid black;
+		color:black;
+		border-collapse: collapse;
+		margin: 0;
+		padding: 0;
+		width: 100%;
+		table-layout: fixed;
+	}
+	table caption {
+		font-size: 1.5em;
+		margin: .5em 0 .75em;
+	}
+	table tr {
+		filter:alpha(opacity=20);
+		border: 1px solid black;
+		padding: .35em;
+	}
+	table td {
+		padding: .625em;
+		text-align: center;
+	}
+	table th {
+		font-size: .85em;
+		letter-spacing: .1em;
+		opacity: 0,4;
+		text-transform: uppercase;
+	}
+    </style>
+    <script>
+	/* TYPER */
+	function showRules() {
+		document.getElementById("signUpForm").classList.add("hidden");
+		document.getElementById("rulesForm").classList.remove("hidden");
+	}
+	const TYPER = function () {
+		if (TYPER.instance_) {
+			return TYPER.instance_
+	  	}
+		TYPER.instance_ = this
+		this.WIDTH = window.innerWidth
+		this.HEIGHT = window.innerHeight
+		this.canvas = null
+		this.ctx = null
+		this.words = []
+		this.word = null
+		this.wordMinLength = 5
+		this.guessedWords = 0
+		this.score = 0
+		this.leaderboard = []
+		this.init()
+	}
+	window.TYPER = TYPER
+	TYPER.prototype = {
+		init: function () {
+			this.canvas = document.getElementsByTagName('canvas')[0]
+			this.ctx = this.canvas.getContext('2d')
+			this.canvas.style.width = this.WIDTH + 'px'
+			this.canvas.style.height = this.HEIGHT + 'px'
+			this.canvas.width = this.WIDTH * 2
+			this.canvas.height = this.HEIGHT * 2
+			this.loadWords()
+			//öörežiim
+			var timer2 = new Date().getHours();
+			console.log(timer2)
+			if (timer2 >=23 || timer2<=6 ){
+			this.ctx.fillStyle = "white";
+			var x = document.getElementsByTagName("BODY")[0];
+			x.style.backgroundColor = "black";
+			document.getElementById('rulesForm').style.color = 'white';
+			document.getElementById('signUpForm').style.color = 'white';
+			document.getElementById('gameForm').style.color = 'white';
+			
+			
+			}
+		},
+		loadWords: function () {
+			const xmlhttp = new XMLHttpRequest()
+			xmlhttp.onreadystatechange = function () {
+				if (xmlhttp.readyState === 4 && (xmlhttp.status === 200 || xmlhttp.status === 0)) {
+					const response = xmlhttp.responseText
+					const wordsFromFile = response.split('\n')
+					typer.words = structureArrayByWordLength(wordsFromFile)
+					typer.start()
+				}
+			}
+			xmlhttp.open('GET', './lemmad2013.txt', true)
+			xmlhttp.send()
+		},
+		start: function () {
+			this.generateWord()
+			this.word.Draw()
+			window.addEventListener('keypress', this.keyPressed.bind(this))
+		},
+		generateWord: function () {
+			const generatedWordLength = this.wordMinLength + parseInt(this.guessedWords / 5)
+			const randomIndex = (Math.random() * (this.words[generatedWordLength].length - 1)).toFixed()
+			const wordFromArray = this.words[generatedWordLength][randomIndex]
+			this.word = new Word(wordFromArray, this.canvas, this.ctx)
+		},
+		keyPressed: function (event) {
+			const letter = String.fromCharCode(event.which)
+			if (letter === this.word.left.charAt(0)) {
+				this.word.removeFirstLetter()
+				if (this.word.left.length === 0) {
+					this.guessedWords += 1
+					this.score += this.word.word.length
+					console.log(this.score)
+					startCountDown()
+					this.generateWord()
+				}
+				this.word.Draw()
+			}
+		}
+	}
+	/* WORD */
+	const Word = function (word, canvas, ctx) {
+		this.word = word
+		this.left = this.word
+		this.canvas = canvas
+		this.ctx = ctx
+	}
+	Word.prototype = {
+		Draw: function () {
+			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+			this.ctx.textAlign = 'center'
+			this.ctx.font = '140px Courier'
+			this.ctx.fillText(this.left, this.canvas.width / 2, this.canvas.height / 2)
+		},
+		removeFirstLetter: function () {
+			this.left = this.left.slice(1)
+		}
+	}
+	/* HELPERS */
+	function structureArrayByWordLength (words) {
+		let tempArray = []
+		for (let i = 0; i < words.length; i++) {
+			const wordLength = words[i].length
+			if (tempArray[wordLength] === undefined)tempArray[wordLength] = []
+				tempArray[wordLength].push(words[i])
+			}
+			return tempArray
+		}
+		window.onload = function () {
+		const typer = new TYPER()
+		window.typer = typer
+	}
+		
+	var gameForm = document.getElementById("gameForm");
+		
+	function startNewGame(){
+		startGame();
+	}
+		
+    	function startGame(){
+		document.getElementById("gameForm").classList.add("hidden");
+		document.getElementById("rulesForm").classList.add("hidden");
+		var radios = document.getElementsByName('gender');
+		var firstName = document.getElementsByName('firstName')[0].value;
+		var showName = document.getElementById('showName').innerHTML = firstName;
+		var random = Math.floor(Math.random() * 6) + 0;
+            
+		if (validate()){
+			for (var i = 0; i < radios.length; i++){
+				if (radios[i].value == "male" && radios[i].checked){
+					var manBg = [ "slateblue", "indigo", "palegreen", "powderblue", "tan", "peru" ];
+					document.body.style.backgroundColor = manBg[random];
+				}
+				else if (radios[i].value == "female" && radios[i].checked){
+					var womanBg = [ "linen", "orchid", "moccasin", "coral", "indianred", "pink" ];
+					document.body.style.backgroundColor = womanBg[random];
+				}
+				
+				
+		}
+		var signUp = document.getElementById("signUpForm");
+		if (signUp.style.display === "none") {
+			signUp.style.display = "block";
+		} else {
+			signUp.style.display = "none";
+			document.getElementById("gameForm").classList.remove("hidden");
+			document.getElementById("gameForm").classList.add("canvas");
+		}
+		startCountDown();
+		} else {
+		var errorMessage = document.getElementById('errorMessage').innerHTML = "Palun täidke kõik väljad";
+		}		
+    	}
+        
+	function validate() {
+		var radios = document.getElementsByName('gender');
+		var firstName = document.getElementsByName('firstName')[0].value;
+		if (!firstName) {
+			return false;
+		}
+		var genderSelected = false;
+		for (var i = 0, length = radios.length; i < length; i++){
+			if(radios[i].checked){
+				genderSelected = true;
+				break;
+			}
+		}
+		return genderSelected;
+	}
+	var id;
+    	function startCountDown(){
+		clearInterval(id);
+		var startTime = new Date().getTime()
+		id = setInterval(timer, 10)
+		function timer () {
+			const currentTime = new Date().getTime()
+			var timer1 = Math.round((5000 -(currentTime - startTime))/1000);
+			//öörežiim
+			var timer2 = new Date().getHours();
+				if (timer2 >=23 || timer2<=6 ){
+					document.body.style.backgroundColor = "black";
+					}
+			if (timer1>=0){
+				console.log(timer1);
+				var timer1 = document.getElementById('showTime').innerHTML= timer1;
+			} else {
+				document.getElementById("canvas").classList.add("hidden");
+				document.getElementById("ls").classList.remove("hidden");
+				document.getElementById("lb").classList.remove("hidden");
+				clearInterval(id);
+				document.getElementById('showTime').innerHTML = "Aeg sai otsa " + window.typer.score;
+				let leaderBoardEntry = {
+					user: document.getElementsByName('firstName')[0].value,
+					score: window.typer.score
+				}
+				let lb = JSON.parse(localStorage.getItem('leaderboard'));
+				if (!lb) {
+					lb = [];
+				}
+				lb.push(leaderBoardEntry);
+				localStorage.setItem('leaderboard', JSON.stringify(lb));
+				let maxEntry = {score: 0};
+				for (let i = 0; i < lb.length; i++) {
+					let entry = lb[i];
+					if (entry.score > maxEntry.score) {
+						maxEntry = entry;
+						maxEntryName = maxEntry.user;
+						maxEntryScore = maxEntry.score;
+					}
+				}
+				maxEntry = {score: 0};
+				for (let i = 0; i < lb.length; i++) {
+					let entry = lb[i];
+					if (entry.score > maxEntry.score && entry.score<maxEntryScore) {
+					maxEntry = entry;
+						var max2EntryName = maxEntry.user;
+						var max2EntryScore = maxEntry.score;
+					}
+				}
+				maxEntry = {score: 0};
+				for (let i = 0; i < lb.length; i++) {
+					let entry = lb[i];
+					if (entry.score > maxEntry.score && entry.score<max2EntryScore) {
+						maxEntry = entry;
+						var max3EntryName = maxEntry.user;
+						var max3EntryScore = maxEntry.score;
+					}
+				}
+				maxEntry = {score: 0};
+				for (let i = 0; i < lb.length; i++) {
+					let entry = lb[i];
+					if (entry.score > maxEntry.score && entry.score<max3EntryScore) {
+						maxEntry = entry;
+						var max4EntryName = maxEntry.user;
+						var max4EntryScore = maxEntry.score;
+					}
+				}
+				maxEntry = {score: 0};
+				for (let i = 0; i < lb.length; i++) {
+					let entry = lb[i];
+					if (entry.score > maxEntry.score && entry.score<max4EntryScore) {
+						maxEntry = entry;
+						var max5EntryName = maxEntry.user;
+						var max5EntryScore = maxEntry.score;
+					}
+				}
+				var firstPlaceName = document.getElementById('firstPlaceName').innerHTML = maxEntryName;
+				var firstPlaceScore = document.getElementById('firstPlaceScore').innerHTML = maxEntryScore;
+				var secondPlaceName = document.getElementById('secondPlaceName').innerHTML = max2EntryName;
+				var secondPlaceScore = document.getElementById('secondPlaceScore').innerHTML = max2EntryScore;
+				var thirdPlaceName = document.getElementById('thirdPlaceName').innerHTML = max3EntryName;
+				var thirdPlaceScore = document.getElementById('thirdPlaceScore').innerHTML = max3EntryScore;
+				var fourthPlaceName = document.getElementById('fourthPlaceName').innerHTML = max4EntryName;
+				var fourthPlaceScore = document.getElementById('fourthPlaceScore').innerHTML = max4EntryScore;
+				var fifthPlaceName = document.getElementById('fifthPlaceName').innerHTML = max5EntryName;
+				var fifthPlaceScore = document.getElementById('fifthPlaceScore').innerHTML = max5EntryScore;
+				// let lbStr = "";
+				// var itemKey = localStorage.length+1;
+				// localStorage.setItem(itemKey, lbStr);
+				// var max1=(JSON.parse(localStorage.getItem(1)))[0].score;
+				// var max2=(JSON.parse(localStorage.getItem(1)))[0].score;
+				// var max3;
+				// var max4;
+				// var max5;
+				// var onevalue
+				// var event;
+				// var currentscore;
+				// var max1name;
+				// var max2name;
+				// var playername;
+				// for (var i=1; i <= localStorage.length; i++)  {
+				// 	onevalue = localStorage.getItem(i)
+				// 	event = JSON.parse(onevalue);
+				// 	currentscore =  event[0].score;
+				// 	playername = event[0].name;
+				// 	if(currentscore>=max1){
+				// 		max1 = currentscore;
+				// 		max1name = playername
+				// 	}
+				// }
+				// for (var i=1; i <= localStorage.length; i++)  {
+				// 	onevalue = localStorage.getItem(i)
+				// 	event = JSON.parse(onevalue);
+				// 	currentscore = event[0].score;
+				// 	playername = event[0].name;
+				// 	if(currentscore>=max2){
+				// 		if(currentscore<max1){
+				// 			max2 = currentscore;
+				// 			max2name = playername
+				// 		}
+				// 	}
+				// }
+				// console.log(max1);
+				// console.log(max1name);
+				// console.log(max2);
+				// console.log(max2name);
+			}
+			document.getElementById("lastScore").innerHTML = window.typer.score;
+			//öörežiim
+			var timer2 = new Date().getHours();
+				if (timer2 >=23 || timer2<=6 ){
+					document.getElementById('showTime').style.color = "white";
+					document.getElementById('lb').style.color = 'white';
+					document.getElementById('ls').style.color = 'white';
+					document.getElementsByTagName('table').style.borderColor = 'white';
+				}
+			//printLeaderboard();
+		}
+	}
+		
+				
+	function printLeaderboard() {
+		let leaderBoardDiv  = document.getElementById("leaderboard");
+		let leaderBoardData = localStorage.getItem('leaderboard');
+		console.log(leaderBoardData);
+		leaderBoardDiv.innerHTML = 'väljaarvutatud skoor';
+	}
+</script>
+</head>
+<body>
+	<div id="signUpForm">
+		<h1>Registreeri andmed</h1>
+		<label for="firstName" ><b>Nimi   </b></label>
+		<input type="text" placeholder="Sisesta nimi" name="firstName" required><br><br>
+		<div required>
+			<input type="radio" name="gender" value="male"> Mees
+			<input type="radio" name="gender" value="female"> Naine <br><br>
+		</div>
+		<span id="errorMessage"></span><br>
+		<button type="submit" class="submitbtn" onclick="startGame()">Alusta mängu</button><br>
+		<button type="submit" class="newgamebtn" onclick="showRules()">Mängu reeglid</button>
+	</div>
+
+	<div id="rulesForm" class="hidden">
+		<h1>Mängu eesmärk</h1>
+		<ol>
+			<li>Trükkida ekraanile kuvatud sõna võimalikult kiiresti</li>
+			<li>Trükkida ekraanile kuvatud sõna võimalikult õigesti</li>
+		</ol>
+		<h1>Mängu reeglid</h1>
+		<ol>
+			<li>Mäng on läbi kui taimer on tikunud nulli</li>
+			<li>Iga sõna õigesti trükkimisel lisakase taimerile aega juurde</li>
+		</ol>
+	</div>
+	<div id="gameForm" class="hidden">
+		<p  class="gametop" ></p>
+		<p id="showTime" class="gametop"></p>
+		<button type="submit" class="newgamebtn" onclick="startNewGame()">Alusta uuesti</button>
+		<table id="ls" class="hidden">
+			<caption>Sinu tulemus</caption>
+			<thead>
+				<tr>
+					<th scope="col">Koht</th>
+					<th scope="col">Nimi</th>
+					<th scope="col">Skoor</th>
+				</tr>
+			</thead>
+				<tr>
+					<td data-label="Koht"></td>
+					<td data-label="Nimi" id="showName" ></td>
+					<td data-label="Skoor" id="lastScore"></td>
+				</tr>
+		</table>
+		<table id="lb" class="hidden">
+			<caption>Edetabel</caption>
+			<thead>
+				<tr>
+					<th scope="col">Koht</th>
+					<th scope="col">Nimi</th>
+					<th scope="col">Skoor</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td data-label="Koht">1</td>
+					<td data-label="Nimi" id="firstPlaceName"></td>
+					<td data-label="Skoor" id="firstPlaceScore"></td>
+				</tr>
+				<tr>
+					<td data-label="Koht">2</td>
+					<td data-label="Nimi" id="secondPlaceName"></td>
+					<td data-label="Skoor" id="secondPlaceScore"></td>
+				</tr>
+				<tr>
+					<td data-label="Koht">3</td>
+					<td data-label="Nimi" id="thirdPlaceName"></td>
+					<td data-label="Skoor" id="thirdPlaceScore"></td>
+				</tr>
+				<tr>
+					<td data-label="Koht">4</td>
+					<td data-label="Nimi" id="fourthPlaceName"></td>
+					<td data-label="Skoor" id="fourthPlaceScore"></td>
+				</tr>
+				<tr>
+					<td data-label="Koht">5</td>
+					<td data-label="Nimi" id="fifthPlaceName"></td>
+					<td data-label="Skoor" id="fifthPlaceScore"></td>
+				</tr>
+			</tbody>
+		</table>
+		<canvas  id="canvas"></canvas>
+	</div>
+</body>
+</html>
+>>>>>>> ae3b21ac21c58b9c0a216f7c08237c6b89fd4afd
