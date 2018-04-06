@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+  <head>
+		<meta charset="UTF-8">
+    <title>typer</title>
+    <style> 
+      * {
+        margin: 0;
+        padding: 0;
+      }
+ 
+	  body { 
+        text-align: center;
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    }
+	  
+	  input[type=text] {
+        width: 50%;
+        padding: 15px;
+        margin: 100px 0 30px 0;
+        display: inline-block;
+        border: none;
+        background: #f1f1f1;
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+      }
+      .submitbtn {
+        background-color: rgb(24, 23, 27);
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        cursor: pointer;
+        width: 50%;
+        opacity: 0.9;
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+      }
+	  
+	  .newgamebtn {
+	    background-color: rgb(24, 23, 27);
+        color: white;
+        cursor: pointer;
+        opacity: 0.9;
+		text-align: right;
+		border: none;
+		padding: 14px 20px;
+		opacity: 0.9;
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+		margin: 8px, 8px;
+	  }
+	  
+      button:hover {
+        opacity:1;
+      }
+      div.hidden {
+        display: none;
+      }
+	  
+	  canvas.hidden {
+        display: none;
+      }
+			h1.hidden {
+				display: none;
+			}
+      .gametop {
+        text-align: left;
+        font-size: 14px;
+      }
+		
+    </style>
+    <script>
+		/* TYPER */
+		function showRules() {
+			document.getElementById("signUpForm").classList.add("hidden");
+			document.getElementById("rulesForm").classList.remove("hidden");
+		}
+		const TYPER = function () {
+		  if (TYPER.instance_) {
+			return TYPER.instance_
+		  }
+		  TYPER.instance_ = this
+		  this.WIDTH = window.innerWidth
+		  this.HEIGHT = window.innerHeight
+		  this.canvas = null
+		  this.ctx = null
+		  this.words = []
+		  this.word = null
+		  this.wordMinLength = 5
+		  this.guessedWords = 0
+		  this.hidden = false
+		  this.init()
+		}
+		window.TYPER = TYPER
+		TYPER.prototype = {
+		  score: 0,
+		  leaderboard: [],
+		  init: function () {
+			this.canvas = document.getElementsByTagName('canvas')[0]
+			this.ctx = this.canvas.getContext('2d')
+			this.canvas.style.width = this.WIDTH + 'px'
+			this.canvas.style.height = this.HEIGHT + 'px'
+			this.canvas.width = this.WIDTH * 2
+			this.canvas.height = this.HEIGHT * 2
+			this.loadWords()
+		  },
+		  loadWords: function () {
+			const xmlhttp = new XMLHttpRequest()
+			xmlhttp.onreadystatechange = function () {
+			  if (xmlhttp.readyState === 4 && (xmlhttp.status === 200 || xmlhttp.status === 0)) {
+				const response = xmlhttp.responseText
+				const wordsFromFile = response.split('\n')
+				typer.words = structureArrayByWordLength(wordsFromFile)
+				typer.start()
+			  }
+			}
+			xmlhttp.open('GET', './lemmad2013.txt', true)
+			xmlhttp.send()
+		  },
+		  start: function () {
+			this.generateWord()
+			this.word.Draw()
+			window.addEventListener('keypress', this.keyPressed.bind(this))
+		  },
+		  generateWord: function () {
+			const generatedWordLength = this.wordMinLength + parseInt(this.guessedWords / 5)
+			const randomIndex = (Math.random() * (this.words[generatedWordLength].length - 1)).toFixed()
+			const wordFromArray = this.words[generatedWordLength][randomIndex]
+			this.word = new Word(wordFromArray, this.canvas, this.ctx)
+			
+		  },
+		  keyPressed: function (event) {
+			const letter = String.fromCharCode(event.which)
+			if (letter === this.word.left.charAt(0)) {
+			  this.word.removeFirstLetter()
+			  if (this.word.left.length === 0) {
+					this.guessedWords += 1
+					this.score += this.word.word.length
+					console.log(this.score)
+					
+					startCountDown()
+					this.generateWord()
+			  }
+			  this.word.Draw()
+			}
+		  }
+		}
+		/* WORD */
+		const Word = function (word, canvas, ctx) {
+		  this.word = word
+		  this.left = this.word
+		  this.canvas = canvas
+			this.ctx = ctx
+		}
+		Word.prototype = {
+		  Draw: function () {
+			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+			this.ctx.textAlign = 'center'
+			this.ctx.font = '140px Courier'
+			if(typer.hidden === false){
+				this.ctx.fillText(this.left, this.canvas.width / 2, this.canvas.height / 2)
+
+			}
+		  },
+		  removeFirstLetter: function () {
+			this.left = this.left.slice(1)
+		  }
+		}
+		/* HELPERS */
+		function structureArrayByWordLength (words) {
+		  let tempArray = []
+		  for (let i = 0; i < words.length; i++) {
+			const wordLength = words[i].length
+			if (tempArray[wordLength] === undefined)tempArray[wordLength] = []
+			tempArray[wordLength].push(words[i])
+		  }
+		  return tempArray
+		}
+		window.onload = function () {
+		  const typer = new TYPER()
+		  window.typer = typer
+		}
+		
+		var gameForm = document.getElementById("gameForm");
+		
+		function startNewGame(){
+			startGame();
+		}
+		
+        function startGame(){
+			//change
+			blink()
+			document.getElementById("gameForm").classList.add("hidden");
+            var radios = document.getElementsByName('gender');
+            var firstName = document.getElementsByName('firstName')[0].value;
+            var showName = document.getElementById('showName').innerHTML = firstName;
+						var random= Math.floor(Math.random() * 6) + 0;
+            
+            if (validate()){
+                for (var i = 0; i < radios.length; i++){
+                    if (radios[i].value == "male" && radios[i].checked){
+                        var manBg = [
+                            "slateblue", "indigo", "palegreen", "powderblue", "tan", "peru"
+                        ];
+												document.body.style.backgroundColor = manBg[random];
+                    }
+                    else if (radios[i].value == "female" && radios[i].checked){
+                        var womanBg = [
+                            "linen", "orchid", "moccasin", "coral", "indianred", "pink"
+                        ];
+                        document.body.style.backgroundColor = womanBg[random];
+                    }
+                }
+                var signUp = document.getElementById("signUpForm");
+                if (signUp.style.display === "none") {
+                    signUp.style.display = "block";
+                } else {
+                    signUp.style.display = "none";
+                    document.getElementById("gameForm").classList.remove("hidden");
+					document.getElementById("gameForm").classList.add("canvas");
+                }
+                startCountDown();
+            } else {
+                var errorMessage = document.getElementById('errorMessage').innerHTML = "Palun täidke kõik väljad";
+						}
+						
+        }
+        
+        function validate() {
+            var radios = document.getElementsByName('gender');
+            var firstName = document.getElementsByName('firstName')[0].value;
+            if (!firstName) {
+                return false;
+            }
+            var genderSelected = false;
+            for (var i = 0, length = radios.length; i < length; i++){
+                if(radios[i].checked){
+                    genderSelected = true;
+                    break;
+                }
+            }
+            return genderSelected;
+        }
+		var id;
+        function startCountDown(){
+			clearInterval(id);
+            var startTime = new Date().getTime()
+            id = setInterval(timer, 10)
+  
+            function timer () {
+                const currentTime = new Date().getTime()
+                var timer1 = Math.round((10000 -(currentTime - startTime))/1000);
+                if (timer1>=0){
+                    var timer1 = document.getElementById('showTime').innerHTML= timer1;
+                } else {
+					clearInterval(id);
+          document.getElementById('showTime').innerHTML = "Aeg sai otsa " + window.typer.score;
+					window.typer.leaderboard.push(window.typer.score);
+					window.typer.leaderboard.push(document.getElementsByName('firstName')[0].value);
+					localStorage.setItem(JSON.stringify(window.typer.leaderboard[1]), JSON.stringify(window.typer.leaderboard[0]));
+					document.getElementById("leaderBoard").innerHTML =localStorage.getItem("sebastjan");
+					printLeaderboard(window.typer.leaderboard);
+					document.getElementById("canvas").classList.add("hidden");
+					document.getElementById("gameForm").classList.add("hidden");
+                }
+          }
+        };
+		function printLeaderboard(scores) {
+			console.log(scores)
+			for(var i = 0; i < scores.length; i++) {
+				console.log(scores[i]);
+				finalScore = document.getElementById("finalScore").innerHTML = (scores[i]);
+			}
+		}
+		
+		//change
+		let t = 0
+
+		function blink() {
+			if(t<4500){
+				setTimeout(function(){ show() }, 5500-t);
+				setTimeout(function(){ hide() }, 5000-t);
+				setTimeout(function(){ blink() }, 6000-t);
+				t = t + 500
+			}else{
+				setTimeout(function(){ show() }, 600);
+				setTimeout(function(){ hide() }, 300);
+				setTimeout(function(){ blink() }, 900);
+		}
+	}
+
+	function show() {
+		document.getElementById("test").style.visibility = "visible";
+		typer.hidden = false
+		typer.word.Draw()
+	}
+
+	function hide() {
+		document.getElementById("test").style.visibility = "hidden";
+		typer.hidden = true
+		typer.word.Draw()
+	}
+	</script>
+  </head>
+  <body>
+	<div id="signUpForm">
+		<h1>Registreeri andmed</h1>
+		<label for="firstName" ><b>Nimi   </b></label>
+		<input type="text" placeholder="Sisesta nimi" name="firstName" required><br><br>
+		<div required>
+			<input type="radio" name="gender" value="male"> Mees
+			<input type="radio" name="gender" value="female"> Naine <br><br>
+		</div>
+		<span id="errorMessage"></span><br>
+		<button type="submit" class="submitbtn" onclick="startGame()">Alusta mängu</button><br>
+		<button type="submit" class="newgamebtn" onclick="showRules()">Mängu reeglid</button>
+	</div>
+	<div id="rulesForm" class="hidden">
+		<h1>Mängu eesmärk</h1>
+		<ol>
+			<li>Trükkida ekraanile kuvatud sõna võimalikult kiiresti</li>
+			<li>Trükkida ekraanile kuvatud sõna võimalikult õigesti</li>
+		</ol>
+		<h1>Mängu reeglid</h1>
+		<ol>
+			<li>Mäng on läbi kui taimer on tikunud nulli</li>
+			<li>Iga sõna õigesti trükkimisel lisakase taimerile aega juurde</li>
+		</ol>
+	</div>
+	<div id="gameForm" class="hidden">
+			<h1 id="leaderBoard" ></h1>
+		<p id="showName" class="gametop" ></p>
+		<p id="showTime" class="gametop"></p>
+		<button type="submit" class="newgamebtn" onclick="startNewGame()">Alusta uuesti</button><br>
+		<h1 id="test">Tekst</h1>
+		<canvas  id="canvas"></canvas>
+		</div>
+			<h1 id="leaderBoard" >
+			</h1>
+		</div>
+  </body>
+</html>
