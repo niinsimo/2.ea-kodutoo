@@ -6,7 +6,7 @@
 
 Mängu eesmärk on võimalikult kiiresti ekraanile tekkivaid sõnu ära trükkida. Sõnad on võetud [Eesti Keele Instituudi lehelt](http://www.eki.ee/tarkvara/wordlist/) – [lemmad2013](http://www.eki.ee/tarkvara/wordlist/lemmad2013.txt). Aluseks tuleb võtta kood **[eesrakenduste-arendamine-2018k/klahvimine](https://github.com/eesrakenduste-arendamine-2018k/klahvimine)**. 
 Kirjeldus: Kasutaja peab trükkima ekraanile tekkivaid sõnu. Iga sõna trükkimiseks on aega 5 sekundit. Kui sõna on ära arvatud hakkab taimer uuesti 5st sekundist pihta.
-Lisaks hakkavad sõnad ka mõne aja järel ekraanil kiirenevas tempos liikuma, et sõnu oleks raskem näha ja kirjutada. Lisaks on mängule lisatud öörežiim(dark mode).
+Lisaks hakkavad sõnad ka mõne aja järel ekraanil kiirenevas tempos vilkuma, et sõnu oleks raskem näha ja kirjutada. Lisaks on mängule lisatud öörežiim(dark mode).
 NB! Lõplik mäng on failis index.html. 
 
 ### Tähtpäev 26.03.2018 23:59
