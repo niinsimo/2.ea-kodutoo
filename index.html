@@ -67,9 +67,10 @@
 	}
 			
 	.gametop {
-		text-align: left;
-		font-size: 14px;
+		text-align: right;
+		font-size: 50px;
 		padding: 14px 20px;
+		font-family:Courier new;
 	}
 			
 	.leaderboard{
@@ -128,6 +129,7 @@
 		this.guessedWords = 0
 		this.score = 0
 		this.leaderboard = []
+		this.hidden = false
 		this.init()
 	}
 	window.TYPER = TYPER
@@ -205,7 +207,10 @@
 			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 			this.ctx.textAlign = 'center'
 			this.ctx.font = '140px Courier'
-			this.ctx.fillText(this.left, this.canvas.width / 2, this.canvas.height / 2)
+			if(typer.hidden === false){
+				this.ctx.fillText(this.left, this.canvas.width / 2, this.canvas.height / 2)
+
+			}
 		},
 		removeFirstLetter: function () {
 			this.left = this.left.slice(1)
@@ -229,15 +234,18 @@
 	var gameForm = document.getElementById("gameForm");
 		
 	function startNewGame(){
-		startGame();
+		location.reload();
+		
 	}
 		
     	function startGame(){
+		blink()
 		document.getElementById("gameForm").classList.add("hidden");
 		document.getElementById("rulesForm").classList.add("hidden");
 		var radios = document.getElementsByName('gender');
 		var firstName = document.getElementsByName('firstName')[0].value;
 		var showName = document.getElementById('showName').innerHTML = firstName;
+		var showName2 = document.getElementById('showName2').innerHTML = firstName;
 		var random = Math.floor(Math.random() * 6) + 0;
             
 		if (validate()){
@@ -283,18 +291,6 @@
 		return genderSelected;
 	}
 	var id;
-	/* Töötab mängijate salvestamine local storagesse ja praeguse mängija tulemuse ning 5 parima 
-	välja kuvamine ekraanile peale mängu lõppu . Tegelikult peaks välja kuvama 10 parimat 
-	ja tahtsin teada kas selle jaoks oleks mõtekam midagi paremat teha kui lihtsalt 10 stüklit järjest
-	ja siis käsitsi 10 tabeli kohta?
-
-	Puudu on veel keerulisem skooriarvutus kuna hetkel on skoor lihtsalt allesjaanud sekundid pluss arvatud 
-	sõna tähtede arv
-	Oleks vaja saada kätte kuidagi valesti arvatud tähtede arv ja siis saaks seda rakendada
-	ja oleks vaja korda teha "alusta uuesti nupp", sest kui seda hetkel vajutada, jääb taust ikka sama värvi,
-	funktsiooni sees ei saanud seda muuta.
-	Ja skoori ei kustutata, aeg ei alga ka uuesti.
-	*/
     	function startCountDown(){
 		clearInterval(id);
 		var startTime = new Date().getTime()
@@ -371,6 +367,52 @@
 						var max5EntryScore = maxEntry.score;
 					}
 				}
+				maxEntry = {score: 0};
+				for (let i = 0; i < lb.length; i++) {
+					let entry = lb[i];
+					if (entry.score > maxEntry.score && entry.score<max5EntryScore) {
+						maxEntry = entry;
+						var max6EntryName = maxEntry.user;
+						var max6EntryScore = maxEntry.score;
+					}
+				}
+				maxEntry = {score: 0};
+				for (let i = 0; i < lb.length; i++) {
+					let entry = lb[i];
+					if (entry.score > maxEntry.score && entry.score<max6EntryScore) {
+						maxEntry = entry;
+						var max7EntryName = maxEntry.user;
+						var max7EntryScore = maxEntry.score;
+					}
+				}
+				maxEntry = {score: 0};
+				for (let i = 0; i < lb.length; i++) {
+					let entry = lb[i];
+					if (entry.score > maxEntry.score && entry.score<max7EntryScore) {
+						maxEntry = entry;
+						var max8EntryName = maxEntry.user;
+						var max8EntryScore = maxEntry.score;
+					}
+				}
+				maxEntry = {score: 0};
+				for (let i = 0; i < lb.length; i++) {
+					let entry = lb[i];
+					if (entry.score > maxEntry.score && entry.score<max8EntryScore) {
+						maxEntry = entry;
+						var max9EntryName = maxEntry.user;
+						var max9EntryScore = maxEntry.score;
+					}
+				}
+				maxEntry = {score: 0};
+				for (let i = 0; i < lb.length; i++) {
+					let entry = lb[i];
+					if (entry.score > maxEntry.score && entry.score<max9EntryScore) {
+						maxEntry = entry;
+						var max10EntryName = maxEntry.user;
+						var max10EntryScore = maxEntry.score;
+					}
+				}
+				
 				var firstPlaceName = document.getElementById('firstPlaceName').innerHTML = maxEntryName;
 				var firstPlaceScore = document.getElementById('firstPlaceScore').innerHTML = maxEntryScore;
 				var secondPlaceName = document.getElementById('secondPlaceName').innerHTML = max2EntryName;
@@ -381,46 +423,18 @@
 				var fourthPlaceScore = document.getElementById('fourthPlaceScore').innerHTML = max4EntryScore;
 				var fifthPlaceName = document.getElementById('fifthPlaceName').innerHTML = max5EntryName;
 				var fifthPlaceScore = document.getElementById('fifthPlaceScore').innerHTML = max5EntryScore;
-				// let lbStr = "";
-				// var itemKey = localStorage.length+1;
-				// localStorage.setItem(itemKey, lbStr);
-				// var max1=(JSON.parse(localStorage.getItem(1)))[0].score;
-				// var max2=(JSON.parse(localStorage.getItem(1)))[0].score;
-				// var max3;
-				// var max4;
-				// var max5;
-				// var onevalue
-				// var event;
-				// var currentscore;
-				// var max1name;
-				// var max2name;
-				// var playername;
-				// for (var i=1; i <= localStorage.length; i++)  {
-				// 	onevalue = localStorage.getItem(i)
-				// 	event = JSON.parse(onevalue);
-				// 	currentscore =  event[0].score;
-				// 	playername = event[0].name;
-				// 	if(currentscore>=max1){
-				// 		max1 = currentscore;
-				// 		max1name = playername
-				// 	}
-				// }
-				// for (var i=1; i <= localStorage.length; i++)  {
-				// 	onevalue = localStorage.getItem(i)
-				// 	event = JSON.parse(onevalue);
-				// 	currentscore = event[0].score;
-				// 	playername = event[0].name;
-				// 	if(currentscore>=max2){
-				// 		if(currentscore<max1){
-				// 			max2 = currentscore;
-				// 			max2name = playername
-				// 		}
-				// 	}
-				// }
-				// console.log(max1);
-				// console.log(max1name);
-				// console.log(max2);
-				// console.log(max2name);
+				var sixthPlaceName = document.getElementById('sixthPlaceName').innerHTML = max6EntryName;
+				var sixthPlaceScore = document.getElementById('sixthPlaceScore').innerHTML = max6EntryScore;
+				var seventhPlaceName = document.getElementById('seventhPlaceName').innerHTML = max7EntryName;
+				var seventhPlaceScore = document.getElementById('seventhPlaceScore').innerHTML = max7EntryScore;
+				var eigthPlaceName = document.getElementById('eigthPlaceName').innerHTML = max8EntryName;
+				var eigthPlaceScore = document.getElementById('eigthPlaceScore').innerHTML = max8EntryScore;
+				var ninthPlaceName = document.getElementById('ninthPlaceName').innerHTML = max9EntryName;
+				var ninthPlaceScore = document.getElementById('ninthPlaceScore').innerHTML = max9EntryScore;
+				var tenthPlaceName = document.getElementById('tenthPlaceName').innerHTML = max10EntryName;
+				var tenthPlaceScore = document.getElementById('tenthPlaceScore').innerHTML = max10EntryScore;
+				
+				
 			}
 			document.getElementById("lastScore").innerHTML = window.typer.score;
 			//öörežiim
@@ -433,6 +447,30 @@
 				}
 			//printLeaderboard();
 		}
+	}
+	let t = 0
+
+		function blink() {
+			if(t<4500){
+				setTimeout(function(){ show() }, 5500-t);
+				setTimeout(function(){ hide() }, 5000-t);
+				setTimeout(function(){ blink() }, 6000-t);
+				t = t + 500
+			}else{
+				setTimeout(function(){ show() }, 600);
+				setTimeout(function(){ hide() }, 300);
+				setTimeout(function(){ blink() }, 900);
+		}
+	}
+
+	function show() {
+		typer.hidden = false
+		typer.word.Draw()
+	}
+
+	function hide() {
+		typer.hidden = true
+		typer.word.Draw()
 	}
 		
 				
@@ -469,23 +507,24 @@
 			<li>Mäng on läbi kui taimer on tikunud nulli</li>
 			<li>Iga sõna õigesti trükkimisel lisakase taimerile aega juurde</li>
 		</ol>
+		<button type="submit" class="newgamebtn" onclick="startNewGame()">Tagasi avalehele</button>
 	</div>
 	<div id="gameForm" class="hidden">
 		<p  class="gametop" ></p>
+		<p id="showName" class= "gametop">Nimi</p>
 		<p id="showTime" class="gametop"></p>
 		<button type="submit" class="newgamebtn" onclick="startNewGame()">Alusta uuesti</button>
+		<h1 id="test"></h1>
 		<table id="ls" class="hidden">
 			<caption>Sinu tulemus</caption>
 			<thead>
 				<tr>
-					<th scope="col">Koht</th>
 					<th scope="col">Nimi</th>
 					<th scope="col">Skoor</th>
 				</tr>
 			</thead>
 				<tr>
-					<td data-label="Koht"></td>
-					<td data-label="Nimi" id="showName" ></td>
+					<td data-label="Nimi" id="showName2" ></td>
 					<td data-label="Skoor" id="lastScore"></td>
 				</tr>
 		</table>
@@ -523,6 +562,31 @@
 					<td data-label="Koht">5</td>
 					<td data-label="Nimi" id="fifthPlaceName"></td>
 					<td data-label="Skoor" id="fifthPlaceScore"></td>
+				</tr>
+								<tr>
+					<td data-label="Koht">6</td>
+					<td data-label="Nimi" id="sixthPlaceName"></td>
+					<td data-label="Skoor" id="sixthPlaceScore"></td>
+				</tr>
+								<tr>
+					<td data-label="Koht">7</td>
+					<td data-label="Nimi" id="seventhPlaceName"></td>
+					<td data-label="Skoor" id="seventhPlaceScore"></td>
+				</tr>
+								<tr>
+					<td data-label="Koht">8</td>
+					<td data-label="Nimi" id="eigthPlaceName"></td>
+					<td data-label="Skoor" id="eigthPlaceScore"></td>
+				</tr>
+								<tr>
+					<td data-label="Koht">9</td>
+					<td data-label="Nimi" id="ninthPlaceName"></td>
+					<td data-label="Skoor" id="ninthPlaceScore"></td>
+				</tr>
+								<tr>
+					<td data-label="Koht">10</td>
+					<td data-label="Nimi" id="tenthPlaceName"></td>
+					<td data-label="Skoor" id="tenthPlaceScore"></td>
 				</tr>
 			</tbody>
 		</table>
